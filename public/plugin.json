@@ -1,0 +1,27 @@
+{
+  "pluginName": "whistle",
+  "description": "whistle",
+  "logo": "logo.png",
+  "author": "Leo+CHANDLERVER5",
+  "homepage": "https://xuebin.me",
+  "main": "index.html",
+  "preload": "preload.js",
+  "development": {
+    "main": "http://127.0.0.1:5173"
+  },
+  "platform": ["win32", "darwin"],
+  "features": [
+    {
+      "code": "rules",
+      "explain": "whistle 规则管理",
+      "icon": "whistle.png",
+      "cmds": ["w2", "whistle"]
+    },
+    {
+      "code": "network",
+      "explain": "whistle 控制台",
+      "icon": "whistle.png",
+      "cmds": ["w2-network", "whistle"]
+    }
+  ]
+}
