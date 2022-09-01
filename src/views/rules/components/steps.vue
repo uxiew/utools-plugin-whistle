@@ -5,7 +5,7 @@
  https://opensource.org/licenses/MIT
 -->
 <template>
-  <a-row :gutter="16">
+  <a-row>
     <a-col :span="24">
       <a-steps size="small">
         <!-- check node step -->
@@ -94,8 +94,8 @@
 </template>
 
 <script setup lang="ts">
-import { useStepsStore } from '@/stores/steps';
-import { useW2Store } from '@/stores/w2';
+import { useStepsStore } from "@/stores/steps";
+import { useW2Store } from "@/stores/w2";
 
 const setpsStore = useStepsStore();
 const w2Store = useW2Store();
@@ -105,7 +105,7 @@ let w2_pre_running;
 const w2BtnRenewTxt = computed(() =>
   w2Store.version !== w2Store?.latestVersion
     ? `升级 ${w2Store.version} -> ${w2Store.latestVersion}`
-    : `重新安装 ${w2Store.version}`
+    : `重新安装 ${w2Store.version}`,
 );
 
 onMounted(() => {
@@ -129,14 +129,14 @@ async function init() {
 /** 检查本地是否安装Node */
 async function checkNode() {
   try {
-    setpsStore.node.status = 'process';
+    setpsStore.node.status = "process";
     setpsStore.node.loading = true;
-    setpsStore.node.desc = '';
+    setpsStore.node.desc = "";
     await window.checkNode();
-    setpsStore.node.status = 'finish';
+    setpsStore.node.status = "finish";
   } catch (err: any) {
     setpsStore.node.desc = err.message;
-    setpsStore.node.status = 'error';
+    setpsStore.node.status = "error";
     throw new Error(err.message);
   } finally {
     setpsStore.node.loading = false;
@@ -146,14 +146,14 @@ async function checkNode() {
 /** 检查本地是否安装 Whistle */
 async function checkWhistle() {
   try {
-    setpsStore.w2.status = 'process';
+    setpsStore.w2.status = "process";
     setpsStore.w2.loading = true;
-    setpsStore.w2.desc = '';
+    setpsStore.w2.desc = "";
     await window.whistleCheck();
-    setpsStore.w2.status = 'finish';
+    setpsStore.w2.status = "finish";
   } catch (err: any) {
-    setpsStore.w2.action = 'install';
-    setpsStore.w2.status = 'error';
+    setpsStore.w2.action = "install";
+    setpsStore.w2.status = "error";
     throw new Error(err.message);
   } finally {
     setpsStore.w2.loading = false;
@@ -170,46 +170,46 @@ async function w2BtnInstall() {
  * @description 检查Whistle状态，执行命令
  * @param {string} cmd 命令字符
  */
-async function checkWhistleStatus(cmd = 'status') {
+async function checkWhistleStatus(cmd = "status") {
   try {
-    setpsStore.w2_current.status = 'process';
+    setpsStore.w2_current.status = "process";
     setpsStore.w2_current.loading = true;
-    setpsStore.w2_current.desc = '';
+    setpsStore.w2_current.desc = "";
     const { data } = await window.whistleControl(cmd);
     if (/(No running)|(killed)/gi.test(data)) {
-      setpsStore.w2_current.status = 'error';
+      setpsStore.w2_current.status = "error";
       setpsStore.w2_current.desc = data;
-      setpsStore.w2_current.action = 'start';
+      setpsStore.w2_current.action = "start";
       w2Store.$patch({ running: false });
     } else if (/(is running)|(local\.whistlejs\.com)/gi.test(data)) {
-      setpsStore.w2_current.status = 'finish';
-      setpsStore.w2_current.action = 'restart+stop';
+      setpsStore.w2_current.status = "finish";
+      setpsStore.w2_current.action = "restart+stop";
       w2Store.$patch({ running: true });
     }
   } catch (err: any) {
     setpsStore.w2_current.desc = err.message;
-    setpsStore.w2_current.status = 'error';
+    setpsStore.w2_current.status = "error";
     throw new Error(err.message);
   }
 
   setpsStore.w2_current.loading = false;
   setTimeout(() => {
-    setpsStore.w2.action = 'renew';
+    setpsStore.w2.action = "renew";
   }, 800);
 }
 
 /** 安装 Whistle */
 async function installWhistle() {
   try {
-    setpsStore.w2.status = 'process';
+    setpsStore.w2.status = "process";
     setpsStore.w2.loading = true;
-    setpsStore.w2.desc = '';
+    setpsStore.w2.desc = "";
     await window.whistleInstall();
     await window.whistleCheck();
-    setpsStore.w2.status = 'finish';
+    setpsStore.w2.status = "finish";
   } catch (err: any) {
     setpsStore.w2.desc = err.message;
-    setpsStore.w2.status = 'error';
+    setpsStore.w2.status = "error";
     throw new Error(err.message);
   } finally {
     setpsStore.w2.loading = false;
@@ -222,7 +222,7 @@ async function w2BtnRenew() {
   w2_pre_running = w2Store.running;
   w2Store.running = false;
   await installWhistle();
-  w2_pre_running && (await checkWhistleStatus('restart'));
+  w2_pre_running && (await checkWhistleStatus("restart"));
 }
 </script>
 

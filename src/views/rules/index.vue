@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useW2Store } from '@/stores/w2';
+import { useW2Store } from "@/stores/w2";
 import {
   W2_INIT_API,
   W2_DATA_API,
   W2_RULE_DEFAULT_API,
   W2_RULE_CUSTOM_API,
-  W2_RULES_RELOAD_INTERVAL
-} from '@/utils/const';
-import { Http } from '../../utils/http';
-import { dbPut, dbGet, AUTO_REFRESH_ID } from '../../utils/utools';
-import Qrcode from './components/qrcode.vue';
-import Steps from './components/steps.vue';
+  W2_RULES_RELOAD_INTERVAL,
+} from "@/utils/const";
+import { Http } from "../../utils/http";
+import { dbPut, dbGet, AUTO_REFRESH_ID } from "../../utils/utools";
+import Qrcode from "./components/qrcode.vue";
+import Steps from "./components/steps.vue";
 
 interface Rule {
   index: number;
@@ -26,16 +26,16 @@ const data = reactive({
   server: {},
   proxyEnabled: false,
   defaultEnabled: false,
-  defaultRules: '',
+  defaultRules: "",
   hasInit: false,
-  clientId: '',
-  loading: true
+  clientId: "",
+  loading: true,
 });
 
 const autoRefresh = ref<DbDoc>({
   _id: AUTO_REFRESH_ID, // ID
   data: false, // 是否自动更新
-  _rev: '' // 带上最新的版本号
+  _rev: "", // 带上最新的版本号
 });
 
 const w2_rules: Rule[] = reactive([]);
@@ -43,19 +43,19 @@ const w2_rules: Rule[] = reactive([]);
 // ------ not reactive -----
 let autoReloadTimer = 0;
 
-let mrulesClientId = '';
-let mrulesTime = '';
+let mrulesClientId = "";
+let mrulesTime = "";
 
 // ============
 watch(
   autoRefresh,
-  autoR => {
+  (autoR) => {
     if (autoR?.data) {
       data.loading = true;
       initWhistle();
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onBeforeMount(() => {
@@ -63,9 +63,9 @@ onBeforeMount(() => {
     autoRefresh.value = dbGet(AUTO_REFRESH_ID, true, true) || autoRefresh.value;
   } catch (err: any) {
     console.error(`[LOG]: created -> err`, err);
-    ant_notification['error']({
+    ant_notification["error"]({
       message: `error in created`,
-      description: err.message
+      description: err.message,
     });
   }
 });
@@ -75,13 +75,13 @@ onMounted(async () => {
   // check system proxy
   w2Store.proxyWorking = await window.checkSystemProxy({
     address: w2Store.address,
-    port: w2Store.port
+    port: w2Store.port,
   });
 });
 
 // watch the w2Store
 w2Store.$subscribe((mutation, state) => {
-  console.log('----w2Store  watch --', mutation, state);
+  console.log("----w2Store  watch --", mutation, state);
   // @ts-ignore
   if (mutation.payload && mutation.payload.running === undefined) return;
   // @ts-ignore
@@ -97,11 +97,11 @@ async function toggleProxy(enable: boolean) {
   try {
     const isWorking = await window.setSystemProxy(enable);
     w2Store.proxyWorking = enable && isWorking;
-    console.log('isProxyWorking', isWorking);
+    console.log("isProxyWorking", isWorking);
   } catch (err: any) {
-    ant_notification['error']({
-      message: `${enable ? '设置' : '关闭'}系统代理失败`,
-      description: err.message
+    ant_notification["error"]({
+      message: `${enable ? "设置" : "关闭"}系统代理失败`,
+      description: err.message,
     });
     throw new Error(err.message);
   }
@@ -118,9 +118,9 @@ function toggleAutoRefresh(refresh: boolean) {
     }); */
   } catch (err: any) {
     console.error(`[LOG]: autoRefresh -> err`, err);
-    ant_notification['error']({
-      message: 'error in changeAutoRefresh',
-      description: err.message
+    ant_notification["error"]({
+      message: "error in changeAutoRefresh",
+      description: err.message,
     });
   }
 }
@@ -131,9 +131,9 @@ async function initWhistle() {
   try {
     // if (!w2Store.running) return;
     const res = await http.get(W2_INIT_API);
-    if (res.code === 'ERR_NETWORK') {
+    if (res.code === "ERR_NETWORK") {
       w2Store.$patch({
-        running: false
+        running: false,
       });
       return;
     }
@@ -174,7 +174,7 @@ async function autoReloadWhistleRules() {
       clearTimeout(autoReloadTimer);
       autoReloadTimer = setTimeout(
         autoReloadWhistleRules,
-        W2_RULES_RELOAD_INTERVAL
+        W2_RULES_RELOAD_INTERVAL,
       );
     }
   } catch (err) {
@@ -182,7 +182,7 @@ async function autoReloadWhistleRules() {
     clearTimeout(autoReloadTimer);
     autoReloadTimer = setTimeout(
       autoReloadWhistleRules,
-      W2_RULES_RELOAD_INTERVAL
+      W2_RULES_RELOAD_INTERVAL,
     );
   }
 }
@@ -194,15 +194,15 @@ async function getWhistleRules() {
       clientId: data.clientId,
       startLogTime: -2,
       startSvrLogTime: -2,
-      ids: '',
+      ids: "",
       dumpCount: 0,
-      logId: '',
+      logId: "",
       count: 20,
-      _: new Date().getTime()
-    }
+      _: new Date().getTime(),
+    },
   });
   data.defaultEnabled = !res.defaultRulesIsDisabled;
-  w2_rules.forEach(rule => (rule.selected = res.list.includes(rule.name)));
+  w2_rules.forEach((rule) => (rule.selected = res.list.includes(rule.name)));
   return res;
 }
 
@@ -228,17 +228,17 @@ async function changeRule(item: Rule) {
       selected: item.selected,
       active: true,
       key: `w-reactkey-${item.index + 2}`,
-      icon: 'checkbox',
+      icon: "checkbox",
       hide: false,
-      changed: false
+      changed: false,
     });
 
     await manuallyModifyRules();
   } catch (err: any) {
     console.error(`[LOG]: changeRule -> err`, err);
-    ant_notification['error']({
-      message: 'error in changeRule',
-      description: err.message
+    ant_notification["error"]({
+      message: "error in changeRule",
+      description: err.message,
     });
   }
 }
@@ -249,21 +249,21 @@ async function changeDefaultRule(value: boolean) {
     let url = value ? W2_RULE_DEFAULT_API.ENABLE : W2_RULE_DEFAULT_API.DISABLE;
     await http.post(url, {
       clientId: data.clientId,
-      name: 'Default',
+      name: "Default",
       fixed: true,
       value: data.defaultRules,
       selected: !value,
       isDefault: true,
       active: true,
-      key: 'w-reactkey-1',
-      icon: 'checkbox'
+      key: "w-reactkey-1",
+      icon: "checkbox",
     });
     await manuallyModifyRules();
   } catch (err: any) {
     console.error(`[LOG]: changeDefault -> err`, err);
-    ant_notification['error']({
-      message: 'error in changeDefault',
-      description: err.message
+    ant_notification["error"]({
+      message: "error in changeDefault",
+      description: err.message,
     });
   }
 }
@@ -312,7 +312,7 @@ async function setDefaultValues() {
   <div class="wrapper">
     <Steps />
 
-    <a-row :gutter="16">
+    <a-row>
       <a-col :span="8">
         <Qrcode />
       </a-col>
@@ -417,7 +417,7 @@ async function setDefaultValues() {
     max-width: 100%;
   }
 
-  &-item-container[role='button'] {
+  &-item-container[role="button"] {
     cursor: initial;
   }
 }

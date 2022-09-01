@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { W2_URL } from '@/utils/const';
-import { open } from '@/utils/utools';
+import { W2_URL } from "@/utils/const";
+import { open } from "@/utils/utools";
+import { useW2Store } from "@/stores/w2";
+const w2Store = useW2Store();
 
 // maybe need raective,placeholder
 const data = reactive({
-  ip: '',
-  port: '',
-  address: '',
-  ss: '',
-  qrcode: ''
+  ip: "",
+  port: "",
+  address: "",
+  ss: "",
+  qrcode: "",
 });
 
 onBeforeMount(() => {
@@ -16,9 +18,9 @@ onBeforeMount(() => {
     getQrCode();
   } catch (err: any) {
     console.error(`[LOG]: WhistleQrcode -> created -> err`, err);
-    ant_notification['error']({
+    ant_notification["error"]({
       message: `error in qrcode created`,
-      description: err.message
+      description: err.message,
     });
   }
 });
@@ -46,7 +48,11 @@ function setClipboard(text: string) {
 }
 
 function openW2() {
-  open(W2_URL + '#network');
+  if (w2Store.running) {
+    open(W2_URL + "#network");
+  } else {
+    ant_message.error(`whistle 服务未启动!`);
+  }
 }
 
 const { ip, port, address, ss, qrcode } = toRefs(data);
