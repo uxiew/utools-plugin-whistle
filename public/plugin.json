@@ -1,6 +1,7 @@
 {
+  "name": "whistle",
   "pluginName": "whistle",
-  "description": "whistle",
+  "description": "图形化操作 whistle 😄",
   "logo": "logo.png",
   "author": "Leo+CHANDLERVER5",
   "homepage": "https://xuebin.me",
@@ -8,6 +9,9 @@
   "preload": "preload.js",
   "development": {
     "main": "http://127.0.0.1:5173"
+  },
+  "pluginSetting": {
+    "single": true
   },
   "platform": ["win32", "darwin"],
   "features": [
